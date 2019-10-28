@@ -10,6 +10,8 @@ from sys import argv  # For getting argument of files dragged
 # Get all tshirts and put them on a list -Done
 # Make transparent -Done
 # make a list with the design in each available colour, design_colours = []
+#	 Nested for loop in a for loop to cycle between colour_list and pixels
+#	 If item[4] != 0: etc. If its not transparent do thing
 # Resize each one
 # for i in design_colour stamp i on all tshirts and save each file on final_tshirt folder
 # print when each combination is finished
@@ -30,6 +32,43 @@ def remove_background(img):
 	img.putdata(new_data)  # Applies the new data with transparent pixels to the old image
 	return img
 
+def black_to_colour(img, colour_list):
+	data = img.getdata()  # GEt data etc
+	new_data = []  # SAme first steps as remove_background()
+	
+	img_width, img_height = img.size  # Get size of design sent and store in varibles
+	
+	colour_designs = []  # Where all the finished images go. 
+	
+	for colour in colour_list:  # For each colour change the colour in the image
+	
+		for item in data:  # Now doing for each pixel
+			
+			if item[3] != 0:  # if the pixel is not transparent change the colour
+				new_data.append(colour[0])
+				
+			else:
+				new_data.append(item)
+				
+		# After colour change is complete a new image with same size is created
+		new_design = Image.new('RGBA', (img_width, img_height), (255, 255, 255, 0))
+		# And the data is put into it
+		new_design.putdata(new_data)
+		
+		colour_designs.append((new_design, colour[1]))  # To list add new image + colour name
+		
+	return colour_designs
+	
+#-- Design colours with rgba values and names --#
+colours = [
+((240, 10, 10, 1), 'red'), 
+((0, 0, 0 , 1), 'black'), 
+((255, 255, 255, 1), 'white'), 
+((237, 170, 14, 1), 'gold'), 
+((247, 123, 7, 1), 'orange'), 
+((250, 250, 0, 1), 'yellow')
+]
+	
 # Get design file name by argument. [0] is .py file name
 designs = argv[1:]
 
@@ -44,5 +83,8 @@ shirts = [f for f in listdir(r'.\shirts') if isfile(join(r'.\shirts', f))]
 # Use for loop to run design program per argument given
 for i in designs:
 	image = Image.open(i)  # Open picture using PIL
+	
 	no_background = remove_background(image)  # Remove background of each image
 	
+	design_colour_list = black_to_colour(no_background, colours)
+	design_colour_list[1][0].show()
