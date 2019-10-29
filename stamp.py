@@ -34,7 +34,6 @@ def remove_background(img):
 
 def black_to_colour(img, colour_list):
 	data = img.getdata()  # GEt data etc
-	new_data = []  # SAme first steps as remove_background()
 	
 	img_width, img_height = img.size  # Get size of design sent and store in varibles
 	
@@ -43,23 +42,28 @@ def black_to_colour(img, colour_list):
 	for colour in colour_list:  # For each colour change the colour in the image
 	
 		print(f'Changing design colour to {colour[1]}')
+		
+		new_data = []  # clean variable
+		
 		for item in data:  # Now doing for each pixel
 			
 			if item[3] != 0:  # if the pixel is not transparent change the colour
 				new_data.append(colour[0])
 				
 			else:
-				new_data.append(item)
+				new_data.append(item)  # if not put the pixel back
 				
 		
-		print(len(new_data), 'New')
+		print(len(new_data), 'New')  # just checking how many in each
 		print(len(data), 'Old')
 		
 		# After colour change is complete a new image with same size is created
 		new_design = Image.new('RGBA', (img_width, img_height), (255, 255, 255, 0))
 		# And the data is put into it
-		new_design.putdata(new_data)   #--------------- NOT WORKING, when it gets to black it duplicates the pixels. 
-		# fix!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		new_design.putdata(new_data)
+
+		
+		
 		
 		new_design.show()
 		
