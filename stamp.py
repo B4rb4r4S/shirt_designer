@@ -42,6 +42,7 @@ def black_to_colour(img, colour_list):
 	
 	for colour in colour_list:  # For each colour change the colour in the image
 	
+		print(f'Changing design colour to {colour[1]}')
 		for item in data:  # Now doing for each pixel
 			
 			if item[3] != 0:  # if the pixel is not transparent change the colour
@@ -50,10 +51,17 @@ def black_to_colour(img, colour_list):
 			else:
 				new_data.append(item)
 				
+		
+		print(len(new_data), 'New')
+		print(len(data), 'Old')
+		
 		# After colour change is complete a new image with same size is created
 		new_design = Image.new('RGBA', (img_width, img_height), (255, 255, 255, 0))
 		# And the data is put into it
-		new_design.putdata(new_data)
+		new_design.putdata(new_data)   #--------------- NOT WORKING, when it gets to black it duplicates the pixels. 
+		# fix!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		
+		new_design.show()
 		
 		colour_designs.append((new_design, colour[1]))  # To list add new image + colour name
 		
