@@ -61,17 +61,34 @@ def black_to_colour(img, colour_list):
 		new_design = Image.new('RGBA', (img_width, img_height), (255, 255, 255, 0))
 		# And the data is put into it
 		new_design.putdata(new_data)
-
-		
-		
-		
-		new_design.show()
 		
 		colour_designs.append((new_design, colour[1]))  # To list add new image + colour name
 		
 	return colour_designs
 	
-#-- Design colours with rgba values and names --#
+def resize(img_list):
+	# Get size desired, if size too big the default to 390 px
+	try:
+		percentage = int(input('% used by design vertically: '))  # Ask for percentage of tshirt occupied vertically
+	except ValueError:
+		print('Pleases only enter a number')
+	
+	raw_width, raw_height = img_list[0][0].size
+	
+    decimal_percentage = percentage/100  # Get number inputed as a decimal eg: 0.65
+    new_height = int(770*decimal_percentage)  # Get percentage of full tshirt vertical size (770)
+    new_width = round((raw_width*new_height)/raw_height)  # Use previous value to get the new size without changin the ratio
+
+    if new_width > 390:
+        print('Width too big, setting to max...')
+        new_width = 390 # Maximum width
+		new_height = round((design_height*new_width)/design_width) # Use previous value to get the new size without changin the ratio
+    
+	# For loop to cycle between images and resize each one, then append to list. 
+	# Return list
+
+	
+	#-- Design colours with rgba values and names --#
 colours = [
 ((240, 10, 10, 1), 'red'), 
 ((0, 0, 0 , 1), 'black'), 
@@ -98,5 +115,6 @@ for i in designs:
 	
 	no_background = remove_background(image)  # Remove background of each image
 	
-	design_colour_list = black_to_colour(no_background, colours)
-	design_colour_list[1][0].show()
+	design_colour_list = black_to_colour(no_background, colours)  # Get a list of the design in all colour available
+	
+	
