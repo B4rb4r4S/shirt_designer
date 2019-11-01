@@ -52,10 +52,6 @@ def black_to_colour(img, colour_list):
 				
 			else:
 				new_data.append(item)  # if not put the pixel back
-				
-		
-		print(len(new_data), 'New')  # just checking how many in each
-		print(len(data), 'Old')
 		
 		# After colour change is complete a new image with same size is created
 		new_design = Image.new('RGBA', (img_width, img_height), (255, 255, 255, 0))
@@ -73,20 +69,29 @@ def resize(img_list):
 	except ValueError:
 		print('Pleases only enter a number')
 	
-	raw_width, raw_height = img_list[0][0].size
+	raw_width, raw_height = img_list[0][0].size  # Gets size for first image
 	
-    decimal_percentage = percentage/100  # Get number inputed as a decimal eg: 0.65
-    new_height = int(770*decimal_percentage)  # Get percentage of full tshirt vertical size (770)
-    new_width = round((raw_width*new_height)/raw_height)  # Use previous value to get the new size without changin the ratio
+	decimal_percentage = percentage/100  # Get number inputed as a decimal eg: 0.65
+	new_height = int(770*decimal_percentage)  # Get percentage of full tshirt vertical size (770)
+	new_width = round((raw_width*new_height)/raw_height)  # Use previous value to get the new size without changin the ratio
 
-    if new_width > 390:
-        print('Width too big, setting to max...')
-        new_width = 390 # Maximum width
+	if new_width > 390:  # 390 is the maximum width of tshirt
+		print('Width too big, setting to max...')
+		new_width = 390 # Maximum width
 		new_height = round((design_height*new_width)/design_width) # Use previous value to get the new size without changin the ratio
-    
+		
+	resized_designs = []  # For loop variable
+	
 	# For loop to cycle between images and resize each one, then append to list. 
+	
+	for design in img_list:
+		new_design = design[0].resize((new_width, new_height), Image.ANTIALIAS)
+		
+		resized_designs.append([new_design, design[1]])
+		
+	return resized_designs
 	# Return list
-
+	
 	
 	#-- Design colours with rgba values and names --#
 colours = [
@@ -116,5 +121,7 @@ for i in designs:
 	no_background = remove_background(image)  # Remove background of each image
 	
 	design_colour_list = black_to_colour(no_background, colours)  # Get a list of the design in all colour available
+	
+	final_designs = resize(design_colour_list)
 	
 	
