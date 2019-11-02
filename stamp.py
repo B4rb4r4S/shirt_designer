@@ -62,14 +62,14 @@ def black_to_colour(img, colour_list):
 		
 	return colour_designs
 	
-def resize(img_list):
+def resize(image):
 	# Get size desired, if size too big the default to 390 px
 	try:
 		percentage = int(input('% used by design vertically: '))  # Ask for percentage of tshirt occupied vertically
 	except ValueError:
-		print('Pleases only enter a number')
+		print('Please only enter a number')
 	
-	raw_width, raw_height = img_list[0][0].size  # Gets size for first image
+	raw_width, raw_height = image.size  # Gets size for first image
 	
 	decimal_percentage = percentage/100  # Get number inputed as a decimal eg: 0.65
 	new_height = int(770 * decimal_percentage)  # Get percentage of full tshirt vertical size (770)
@@ -79,19 +79,10 @@ def resize(img_list):
 		print('Width too big, setting to max...')
 		new_width = 390 # Maximum width
 		new_height = round((raw_height * new_width) / raw_width) # Use previous value to get the new size without changin the ratio
-		
-	resized_designs = []  # For loop variable
 	
-	# For loop to cycle between images and resize each one, then append to list. 
+	resized_design = image.resize((new_width, new_height) )
 	
-	for design in img_list:
-		new_design = design[0].resize((new_width, new_height), Image.ANTIALIAS)
-		
-		resized_designs.append([new_design, design[1]])
-
-	# Return list
-	
-	return resized_designs
+	return resized_design
 	
 def stamp(shirt_list, design_list):
 	
@@ -100,7 +91,6 @@ def stamp(shirt_list, design_list):
 	
 	# Create a mask from white design
 	design_mask = design_list[0][0].convert('1')
-	
 	
 	# For each tshirt stamp each design - for i in tshirt : for j in design
 	for shirt in shirt_list:
@@ -149,7 +139,7 @@ colours = [
 ((0, 0, 0 , 1), 'black'),
 ((240, 10, 10, 1), 'red'), 
 ((237, 170, 14, 1), 'gold'), 
-((247, 123, 7, 1), 'orange'), 
+((235, 107, 52, 1), 'orange'), 
 ((250, 250, 0, 1), 'yellow')
 ]
 	
@@ -168,11 +158,11 @@ shirts = [f for f in listdir(r'.\shirts') if isfile(join(r'.\shirts', f))]
 for i in designs:
 	image = Image.open(i)  # Open picture using PIL
 	
-	no_background = remove_background(image)  # Remove background of each image
+	no_background = remove_background(image)  # Remove background of image
 	
-	design_colour_list = black_to_colour(no_background, colours)  # Get a list of the design in all colour available
+	new_size_design = resize(no_background)  # Resize image
 	
-	final_designs = resize(design_colour_list)  # Resize all the colour versions of the design
+	final_designs = black_to_colour(new_size_design, colours)  # Change colour of image and store in list -> [[Image, 'red'], etc]
 	
 	finished_shirts = stamp(shirts, final_designs)  # Send to put the designs in
 	
