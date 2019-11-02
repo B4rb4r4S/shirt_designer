@@ -123,6 +123,7 @@ def stamp(shirt_list, design_list, design_name):
 			final_shirt.paste(design_img, (round(shirt_width / 2  -  design_width / 2), 200), mask = design_mask)
 			
 			# Generate shirt name
+			design_name = design_name.split('\\')[-1]
 			shirt_name = design_name[:-4] + ' ' + shirt[:-4] + ' shirt with ' + design[1]
 			
 			# Add to list the image and the name
