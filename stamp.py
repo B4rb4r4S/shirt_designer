@@ -84,7 +84,7 @@ def resize(image):
 	
 	return resized_design
 	
-def stamp(shirt_list, design_list):
+def stamp(shirt_list, design_list, design_name):
 	
 	# create variable where shirt colour and design colour [[stamped shirt, 'blue shirt yellow design'], etc] is going to be appended 
 	final_shirts_list = []
@@ -120,10 +120,10 @@ def stamp(shirt_list, design_list):
 			final_shirt.paste(shirt_img, (0, 0) )
 			
 			# paste design in the middle 237px from the top (armpit line)
-			final_shirt.paste(design_img, (round(shirt_width / 2  -  design_width / 2), 237), mask = design_mask)
+			final_shirt.paste(design_img, (round(shirt_width / 2  -  design_width / 2), 200), mask = design_mask)
 			
 			# Generate shirt name
-			shirt_name = shirt[:-4] + ' shirt with ' + design[1]
+			shirt_name = design_name[:-4] + ' ' + shirt[:-4] + ' shirt with ' + design[1]
 			
 			# Add to list the image and the name
 			final_shirts_list.append([final_shirt, shirt_name])
@@ -166,7 +166,7 @@ for i in designs:
 	
 	final_designs = black_to_colour(new_size_design, colours)  # Change colour of image and store in list -> [[Image, 'red'], etc]
 	
-	finished_shirts = stamp(shirts, final_designs)  # Send to put the designs in
+	finished_shirts = stamp(shirts, final_designs, i)  # Send to put the designs in
 	
 	# Save the images
 	for image in finished_shirts:
