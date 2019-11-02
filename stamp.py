@@ -1,4 +1,4 @@
-from PIL import Image, ImageDraw  # Pillow library, for all image handling
+from PIL import Image, ImageDraw, ImageOps  # Pillow library, for all image handling
 from os import listdir  # To list files in a directory
 from os.path import isfile, join  # Check if path is an actual file and join 2 paths together
 from sys import argv  # For getting argument of files dragged
@@ -54,11 +54,11 @@ def black_to_colour(img, colour_list):
 				new_data.append(item)  # if not put the pixel back
 		
 		# After colour change is complete a new image with same size is created
-		new_design = Image.new('RGBA', (img_width, img_height), (255, 255, 255, 0))
+		new_design = Image.new('RGBA', (img_width, img_height), (255, 255, 255, 0) )
 		# And the data is put into it
 		new_design.putdata(new_data)
 		
-		colour_designs.append((new_design, colour[1]))  # To list add new image + colour name
+		colour_designs.append((new_design, colour[1]) )  # To list add new image + colour name
 		
 	return colour_designs
 	
@@ -72,13 +72,13 @@ def resize(img_list):
 	raw_width, raw_height = img_list[0][0].size  # Gets size for first image
 	
 	decimal_percentage = percentage/100  # Get number inputed as a decimal eg: 0.65
-	new_height = int(770*decimal_percentage)  # Get percentage of full tshirt vertical size (770)
-	new_width = round((raw_width*new_height)/raw_height)  # Use previous value to get the new size without changin the ratio
+	new_height = int(770 * decimal_percentage)  # Get percentage of full tshirt vertical size (770)
+	new_width = round((raw_width * new_height) / raw_height)  # Use previous value to get the new size without changin the ratio
 
 	if new_width > 390:  # 390 is the maximum width of tshirt
 		print('Width too big, setting to max...')
 		new_width = 390 # Maximum width
-		new_height = round((design_height*new_width)/design_width) # Use previous value to get the new size without changin the ratio
+		new_height = round((raw_height * new_width) / raw_width) # Use previous value to get the new size without changin the ratio
 		
 	resized_designs = []  # For loop variable
 	
@@ -88,15 +88,66 @@ def resize(img_list):
 		new_design = design[0].resize((new_width, new_height), Image.ANTIALIAS)
 		
 		resized_designs.append([new_design, design[1]])
-		
-	return resized_designs
+
 	# Return list
 	
+	return resized_designs
 	
-	#-- Design colours with rgba values and names --#
+def stamp(shirt_list, design_list):
+	
+	# create variable where shirt colour and design colour [[stamped shirt, 'blue shirt yellow design'], etc] is going to be appended 
+	final_shirts_list = []
+	
+	# get mask from black design
+	
+	design_mask = design_list[0][0]
+	
+	
+	# For each tshirt stamp each design - for i in tshirt : for j in design
+	for shirt in shirt_list:
+		
+		# Open shirt from folder as an image object
+		shirt_img = Image.open(f'shirts\\{shirt}')
+		
+		shirt_img = shirt_img.convert('RGB')
+		
+		# Get size of shirt
+		shirt_width, shirt_height = shirt_img.size
+		
+		for design in design_list:
+			
+			# Get size
+			design_width, design_height = design[0].size
+			
+			# GEt image from list
+			design_img = design[0]
+			design_img = design_img.convert('RGB')
+			
+			
+			# Create a white canvas size of shirt
+			final_shirt = Image.new('RGB', (shirt_width, shirt_height), (255, 255, 255, 1) )
+			
+			# paste shirt into canvas
+			final_shirt.paste(shirt_img, (0, 0) )
+			
+			# paste design in the middle 237px from the top (armpit line)
+			final_shirt.paste(design_img, (round(shirt_width / 2  -  design_width / 2), 237), mask = design_img.convert('L') )
+			
+			# Generate shirt name
+			shirt_name = shirt[:-4] + ' shirt with ' + design[1]
+			
+			# Add to list the image and the name
+			final_shirts_list.append([final_shirt, shirt_name])
+	
+		# Tell user current finished tshirt. [:-3] to exclude extension
+		print(f'{shirt[:-4]} shirts have been finished.')
+	# return variable
+	return final_shirts_list
+	
+#-- Design colours with rgba values and names --#
 colours = [
+((0, 0, 0 , 1), 'black'),
 ((240, 10, 10, 1), 'red'), 
-((0, 0, 0 , 1), 'black'), 
 ((255, 255, 255, 1), 'white'), 
 ((237, 170, 14, 1), 'gold'), 
 ((247, 123, 7, 1), 'orange'), 
@@ -122,6 +173,12 @@ for i in designs:
 	
 	design_colour_list = black_to_colour(no_background, colours)  # Get a list of the design in all colour available
 	
-	final_designs = resize(design_colour_list)
+	final_designs = resize(design_colour_list)  # Resize all the colour versions of the design
 	
+	finished_shirts = stamp(shirts, final_designs)  # Send to put the designs in
+	
+	# Save the images
+	for image in finished_shirts:
+	
+		image[0].save(f'final_shirts\\{image[1]}.png')
 	
