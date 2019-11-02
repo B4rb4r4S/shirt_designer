@@ -157,6 +157,8 @@ shirts = [f for f in listdir(r'.\shirts') if isfile(join(r'.\shirts', f))]
 # Use for loop to run design program per argument given
 for i in designs:
 	image = Image.open(i)  # Open picture using PIL
+	image = image.convert('RGBA')
+	
 	
 	no_background = remove_background(image)  # Remove background of image
 	
