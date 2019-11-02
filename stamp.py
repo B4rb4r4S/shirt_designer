@@ -98,9 +98,8 @@ def stamp(shirt_list, design_list):
 	# create variable where shirt colour and design colour [[stamped shirt, 'blue shirt yellow design'], etc] is going to be appended 
 	final_shirts_list = []
 	
-	# get mask from black design
-	
-	design_mask = design_list[0][0]
+	# Create a mask from white design
+	design_mask = design_list[0][0].convert('1')
 	
 	
 	# For each tshirt stamp each design - for i in tshirt : for j in design
@@ -131,7 +130,7 @@ def stamp(shirt_list, design_list):
 			final_shirt.paste(shirt_img, (0, 0) )
 			
 			# paste design in the middle 237px from the top (armpit line)
-			final_shirt.paste(design_img, (round(shirt_width / 2  -  design_width / 2), 237), mask = design_img.convert('L') )
+			final_shirt.paste(design_img, (round(shirt_width / 2  -  design_width / 2), 237), mask = design_mask)
 			
 			# Generate shirt name
 			shirt_name = shirt[:-4] + ' shirt with ' + design[1]
@@ -146,9 +145,9 @@ def stamp(shirt_list, design_list):
 	
 #-- Design colours with rgba values and names --#
 colours = [
+((255, 255, 255, 1), 'white'),
 ((0, 0, 0 , 1), 'black'),
 ((240, 10, 10, 1), 'red'), 
-((255, 255, 255, 1), 'white'), 
 ((237, 170, 14, 1), 'gold'), 
 ((247, 123, 7, 1), 'orange'), 
 ((250, 250, 0, 1), 'yellow')
