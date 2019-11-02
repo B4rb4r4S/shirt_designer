@@ -24,7 +24,7 @@ def remove_background(img):
 	new_data = []  # Set new list
 	
 	for item in data: # This checks if each pixel has a color like gray or darker
-		if item[0] > 60 and item[0] > 60 and item[0] > 60:  
+		if item[0] > 60 and item[1] > 60 and item[2] > 60:  
 			new_data.append((255, 255, 255, 0))  # Adds a transparent pixel instead of white previous one
 		else:
 			new_data.append(item)  # Adds item without changing anything
