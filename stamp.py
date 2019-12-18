@@ -174,3 +174,4 @@ for i in designs:
 	
 		image[0].save(f'final_shirts\\{image[1]}.png')
 	
+# gracias Diego por tu valiosa ayuda, eres genial!!!! heredaste mi mitocondria con los genes geniales
